@@ -7,9 +7,7 @@ return array (
 
     // admin classes names
     'admin_classes' => array(
-        'PostAdmin',
-        'CommentAdmin',
-        'TagAdmin'
+
     )
 
 );
