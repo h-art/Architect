@@ -17,6 +17,9 @@ class BaseAdmin extends Controller
      */
     private $eloquent_model;
 
+    /**
+     * class constructor
+     */
     function __construct()
     {
         $this->eloquent_model = $this->getBaseClassName();
@@ -100,7 +103,7 @@ class BaseAdmin extends Controller
     }
 
     /**
-     * updates a resource
+     * updates an existing resource
      * @return Response
      */
     public function update($id)
@@ -111,7 +114,7 @@ class BaseAdmin extends Controller
 
         foreach ( $input as $key => $value )
         {
-            // guess the relationship
+            // guess the relationship type
             if ( is_array($value) )
             {
                 if ( preg_match('/HasMany/', get_class($row->$key())) )
@@ -180,7 +183,7 @@ class BaseAdmin extends Controller
     }
 
     /**
-     * render the label for the field
+     * render the label for the field or column
      * @param  string $field_name the field name as the one in Eloquent model
      * @return string
      */
@@ -197,15 +200,18 @@ class BaseAdmin extends Controller
     }
 
     /**
-     * render a field in index action
-     * @param  string $action_name the action name 'index', 'show', etc.
-     * @param  Object $row the Eloquent row
-     * @param  string $field_name the name of the field
-     * @param  mixed $field the value of the field
+     * method to render a field.
+     * Rendering depends on the action method. If a valid method is found
+     * in user generated admin class, then that method is called.
+     * @param  string $action_name the action name 'index', 'show', 'edit', etc.
+     * @param  Object $row the whole Eloquent row as comes from the database
+     * @param  string $field_name the name of the field or column
+     * @param  mixed $field the value of the field or column
      * @return mixed
      */
     public function renderField($action_name, $row, $field_name, $field)
     {
+        // check if <action><Fieldname>() method exsists, and if so, call it
         if ( method_exists($this, $action_name . ucfirst($field_name)) )
         {
             $method_name = $action_name . ucfirst($field_name);
