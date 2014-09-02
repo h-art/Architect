@@ -23,6 +23,7 @@ class ArchitectServiceProvider extends ServiceProvider {
         // register the package
         $this->package('hart/architect');
 
+        // get stuff from configuration
         $admin_classes_namespace = Config::get('architect::admin_classes_namespace');
         $admin_classes = Config::get('architect::admin_classes');
 
