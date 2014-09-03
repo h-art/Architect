@@ -47,7 +47,7 @@ to export package configuration. The configuration will be copied in your `app/c
 
 Now you will need to edit the previous file. The only two settings are
 
-```
+```php
 <?php
 
 return array (
