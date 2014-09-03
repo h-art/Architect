@@ -24,7 +24,7 @@ Your `composer.json` file must be edited to autoload your administration classes
 
 Add the Architect service provider in your `app.php` file, as you can see from this example
 
-```
+```php
     'providers' => array(
         ...
         'Illuminate\Cache\CacheServiceProvider',
