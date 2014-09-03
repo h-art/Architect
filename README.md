@@ -12,12 +12,10 @@ Include Architect in your `composer.json` file to use it. Just pick a version nu
 
 Your `composer.json` file must be edited to autoload your administration classes. We strongly recommend to use the [PSR-4](http://www.php-fig.org/psr/psr-4/) notation for autoloading your classes.
 
-```
-...
+```json
         "psr-4": {
             "Vendor\\Admin\\": "Vendor/Admin/"
         }
-...
 ```
 
 ### Step two: add the service provider
