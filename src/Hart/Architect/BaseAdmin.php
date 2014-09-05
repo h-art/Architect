@@ -305,6 +305,11 @@ class BaseAdmin extends Controller
         return $this->default_query;
     }
 
+    protected function getFilters()
+    {
+        return array();
+    }
+
 //===
 //CUSTOM ACTIONS: must refactor comments
 //===
