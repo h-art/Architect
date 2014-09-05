@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Routing\Controller;
 
+use Hart\Architect\Configuration\ArchitectAction;
+
 class BaseAdmin extends Controller
 {
     /**
@@ -18,12 +20,21 @@ class BaseAdmin extends Controller
      */
     private $eloquent_model;
 
+
+    /**
+     * array of custom actions
+     * @var array
+     */
+    protected $custom_actions = array();
+    protected $parsed_custom_actions = array();
+
     /**
      * class constructor
      */
     function __construct()
     {
         $this->eloquent_model = $this->getBaseClassName();
+        $this->setupCustomActions();
     }
 
     /**
@@ -262,6 +273,66 @@ class BaseAdmin extends Controller
      */
     public function registerRoutes()
     {
-        Route::resource(strtolower($this->getBaseClassName()), get_class($this));
+        Route::resource($this->getRouteNamePrefix(), get_class($this));
+        $this->registerCustomActionsRoutes(); 
+      
     }
+
+    public function getRouteNamePrefix()
+    {
+        return strtolower($this->getBaseClassName());
+    }
+
+
+//===
+//CUSTOM ACTIONS
+//===
+
+    public function getCustomActionsPathPrefix()
+    {
+        return '/custom';
+    }
+
+    public function setupCustomActions()
+    {
+        foreach($this->custom_actions as $name => $params)
+        {                     
+            $params['route_name_prefix'] = $this->getRouteNamePrefix();
+
+            if(!isset($params['callable']))
+            {
+  
+                $params['callable'] =  get_class($this)."@".$name;//array($this,$name);
+
+            }
+            $this->parsed_custom_actions[$name] = new ArchitectAction($name,$params);
+        }
+    }
+
+    public function getCustomActions()
+    {
+        return $this->custom_actions;
+    }
+
+    public function getParsedCustomActions()
+    {
+        return $this->parsed_custom_actions;
+    }
+
+    protected function registerCustomActionsRoutes()
+    {
+        if(count($this->getParsedCustomActions()))
+        {
+            $custom_actions = $this->getParsedCustomActions();
+            Route::group(array('prefix' => $this->getRouteNamePrefix().$this->getCustomActionsPathPrefix() ), function () use ($custom_actions) {
+                foreach($custom_actions as $name => $action)
+                {
+                    $action->registerRoute();
+                }
+            });       
+        }
+
+    }
+
+
 }
