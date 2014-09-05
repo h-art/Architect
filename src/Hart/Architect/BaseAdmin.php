@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Routing\Controller;
 
 use Hart\Architect\Configuration\ArchitectAction;
+use Hart\Architect\Configuration\ArchitectActionCollection;
 
 class BaseAdmin extends Controller
 {
@@ -22,11 +23,13 @@ class BaseAdmin extends Controller
 
 
     /**
-     * array of custom actions
+     * collection of custom actions
      * @var array
      */
-    protected $custom_actions = array();
-    protected $parsed_custom_actions = array();
+    protected $custom_actions_collection;
+
+
+    protected $custom_actions_configuration = array();
 
     /**
      * class constructor
@@ -274,8 +277,8 @@ class BaseAdmin extends Controller
     public function registerRoutes()
     {
         Route::resource($this->getRouteNamePrefix(), get_class($this));
-        $this->registerCustomActionsRoutes(); 
-      
+        $this->custom_actions_collection->registerRoutes();
+
     }
 
     public function getRouteNamePrefix()
@@ -288,6 +291,10 @@ class BaseAdmin extends Controller
 //CUSTOM ACTIONS
 //===
 
+    /**
+     * Returns the prefix of the url used for custom actions
+     * @return [type] [description]
+     */
     public function getCustomActionsPathPrefix()
     {
         return '/custom';
@@ -295,43 +302,7 @@ class BaseAdmin extends Controller
 
     public function setupCustomActions()
     {
-        foreach($this->custom_actions as $name => $params)
-        {                     
-            $params['route_name_prefix'] = $this->getRouteNamePrefix();
-
-            if(!isset($params['callable']))
-            {
-  
-                $params['callable'] =  get_class($this)."@".$name;//array($this,$name);
-
-            }
-            $this->parsed_custom_actions[$name] = new ArchitectAction($name,$params);
-        }
-    }
-
-    public function getCustomActions()
-    {
-        return $this->custom_actions;
-    }
-
-    public function getParsedCustomActions()
-    {
-        return $this->parsed_custom_actions;
-    }
-
-    protected function registerCustomActionsRoutes()
-    {
-        if(count($this->getParsedCustomActions()))
-        {
-            $custom_actions = $this->getParsedCustomActions();
-            Route::group(array('prefix' => $this->getRouteNamePrefix().$this->getCustomActionsPathPrefix() ), function () use ($custom_actions) {
-                foreach($custom_actions as $name => $action)
-                {
-                    $action->registerRoute();
-                }
-            });       
-        }
-
+        $this->custom_actions_collection = new ArchitectActionCollection($this,$this->custom_actions_configuration);
     }
 
 
