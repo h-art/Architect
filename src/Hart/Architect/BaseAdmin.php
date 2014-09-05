@@ -2,6 +2,7 @@
 
 namespace Hart\Architect;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Form;
@@ -79,7 +80,7 @@ class BaseAdmin extends Controller
     public function store()
     {
         $eloquent_model = $this->eloquent_model;
-        $instance = new $eloquent_model();
+        $instance = App::make($eloquent_model);
         $instance->save();
 
         return $this->update($instance->id);
