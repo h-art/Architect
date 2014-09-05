@@ -21,6 +21,12 @@ class BaseAdmin extends Controller
      */
     private $eloquent_model;
 
+    /**
+     * the default query to retrieve data sets
+     * @var [type]
+     */
+    protected $default_query;
+
 
     /**
      * collection of custom actions
@@ -46,12 +52,12 @@ class BaseAdmin extends Controller
      */
     public function index()
     {
-        $eloquent_model = $this->eloquent_model;
-        $rows = $eloquent_model::all();
+
+        $rows = $this->getDefaultQuery()->get();
 
         return View::make('architect::index', [
             'controller' => $this,
-            'eloquent_model' => $eloquent_model,
+            'eloquent_model' => $this->eloquent_model,
             'fields' => $this->getFields(),
             'rows' => $rows
         ]);
@@ -63,12 +69,11 @@ class BaseAdmin extends Controller
      */
     public function show($id)
     {
-        $eloquent_model = $this->eloquent_model;
-        $row = $eloquent_model::findOrFail($id);
+        $row = $this->getDefaultQuery()->findOrFail($id);
 
         return View::make('architect::show', [
             'controller' => $this,
-            'eloquent_model' => $eloquent_model,
+            'eloquent_model' => $this->eloquent_model,
             'fields' => $this->getFields(),
             'row' => $row
         ]);
@@ -106,12 +111,11 @@ class BaseAdmin extends Controller
      */
     public function edit($id)
     {
-        $eloquent_model = $this->eloquent_model;
-        $row = $eloquent_model::findOrFail($id);
+        $row = $this->getDefaultQuery()->findOrFail($id);
 
         return View::make('architect::edit', [
             'controller' => $this,
-            'eloquent_model' => $eloquent_model,
+            'eloquent_model' => $this->eloquent_model,
             'fields' => $this->getFields(),
             'row' => $row
         ]);
@@ -286,9 +290,23 @@ class BaseAdmin extends Controller
         return strtolower($this->getBaseClassName());
     }
 
+//===
+//FILTERS: must refactor comments
+//===
+
+    public function getDefaultQuery()
+    {
+        if(!$this->default_query)
+        {
+            $eloquent_model = $this->eloquent_model;
+
+            $this->default_query = $eloquent_model::on();
+        }
+        return $this->default_query;
+    }
 
 //===
-//CUSTOM ACTIONS
+//CUSTOM ACTIONS: must refactor comments
 //===
 
     /**
