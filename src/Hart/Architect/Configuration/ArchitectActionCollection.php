@@ -12,7 +12,6 @@ class ArchitectActionCollection
     {
         $this->admin = $admin;
         $this->setupCustomActions($actions_configuration);
-
     }
 
     public function getRoutes()
@@ -24,14 +23,19 @@ class ArchitectActionCollection
     {
         foreach($actions_configuration as $name => $params)
         {
+            if(!is_array($params))
+            {
+                $name = $params;
+                $params = array();
+            }
+
             $params['route_name_prefix'] = $this->admin->getRouteNamePrefix();
 
             if(!isset($params['callable']))
             {
-
                 $params['callable'] =  get_class($this->admin)."@".$name;//array($this,$name);
-
             }
+
             $this->routes[$name] = new ArchitectAction($name,$params);
         }
     }

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 class ArchitectAction
 {
 
-    protected     $action_name,
+    protected   $action_name,
                 $route_name_prefix,
                 $callable,
                 $method,
@@ -21,13 +21,7 @@ class ArchitectAction
         $this->registerRoute();
     }
 
-    public function registerRoute()
-    {
-        Route::{$this->method}('/'.$this->action_name, array(
-            'as'     => $this->route_name_prefix.".".$this->action_name,
-            'uses'    => $this->callable
-        ));
-    }
+
 
     protected function setup()
     {
@@ -39,6 +33,15 @@ class ArchitectAction
         {
             throw new \Exception("Missing route_name_prefix parameter", 1);
         }
+    }
+
+    public function registerRoute()
+    {
+
+        Route::{$this->method}('/'.$this->action_name, array(
+            'as'     => $this->route_name_prefix.".".$this->action_name,
+            'uses'    => $this->callable
+        ));
     }
 
     protected function getOption($name,$default = false)

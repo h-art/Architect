@@ -51,7 +51,7 @@ Now you will need to edit the previous file. The only two settings are
 return array (
 
     // namespace for admin classes (add also in composer.json)
-    'admin_classes_namespace' => 'Vendor\\Admin\\',
+    'admin_classes_namespace' => 'YourVendorName\\Admin\\',
 
     // admin classes names
     'admin_classes' => array(
