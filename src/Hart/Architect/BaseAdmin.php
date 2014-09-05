@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Routing\Controller;
 
+use Hart\Architect\Configuration\ArchitectAction;
+use Hart\Architect\Configuration\ArchitectActionCollection;
+
 class BaseAdmin extends Controller
 {
     /**
@@ -18,12 +21,23 @@ class BaseAdmin extends Controller
      */
     private $eloquent_model;
 
+
+    /**
+     * collection of custom actions
+     * @var array
+     */
+    protected $custom_actions_collection;
+
+
+    protected $custom_actions_configuration = array();
+
     /**
      * class constructor
      */
     function __construct()
     {
         $this->eloquent_model = $this->getBaseClassName();
+        $this->setupCustomActions();
     }
 
     /**
@@ -262,6 +276,34 @@ class BaseAdmin extends Controller
      */
     public function registerRoutes()
     {
-        Route::resource(strtolower($this->getBaseClassName()), get_class($this));
+        Route::resource($this->getRouteNamePrefix(), get_class($this));
+        $this->custom_actions_collection->registerRoutes();
+
     }
+
+    public function getRouteNamePrefix()
+    {
+        return strtolower($this->getBaseClassName());
+    }
+
+
+//===
+//CUSTOM ACTIONS
+//===
+
+    /**
+     * Returns the prefix of the url used for custom actions
+     * @return [type] [description]
+     */
+    public function getCustomActionsPathPrefix()
+    {
+        return '/custom';
+    }
+
+    public function setupCustomActions()
+    {
+        $this->custom_actions_collection = new ArchitectActionCollection($this,$this->custom_actions_configuration);
+    }
+
+
 }
