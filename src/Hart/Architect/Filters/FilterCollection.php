@@ -12,11 +12,39 @@ class FilterCollection implements \IteratorAggregate
 
         foreach ($filters as $column => $filterType)
         {
-            $class = "Hart\Architect\Filters\\".$filterType."Filter";
-            $this->collection[$column] = new $class($column);
+            if ( $filterType instanceof BaseFilter )
+            {
+                $this->collection[$column] = $filterType;
+            }
+            else
+            {
+
+                $this->collection[$column] = $this->setupFilterType($column,$filterType);
+            }
+
         }
     }
 
+    protected function setupFilterType($column,$filterType)
+    {
+
+        if(!is_array($filterType))
+        {
+            $class = "Hart\Architect\Filters\\".$filterType."Filter";
+            return new $class($column);
+        }
+
+        $type = $filterType['type'];
+        $model = $filterType['model'];
+        $query = $filterType['query'];
+
+        $class = "Hart\Architect\Filters\\".$type."Filter";
+
+        return new $class($column,$filterType);
+
+
+
+    }
     public function getIterator()
     {
         return new ArrayIterator($this->collection);

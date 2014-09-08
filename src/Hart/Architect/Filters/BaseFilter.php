@@ -9,12 +9,24 @@ abstract class BaseFilter
 {
 
 
-    protected $baseQuery = null;
-    protected $column = null;
+    protected   $baseQuery = null,
+                $column = null,
+                $options = array();
 
-    public function __construct($column)
+
+    public function __construct($column,$options = array())
     {
         $this->column = $column;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function getOption($name,$default = null)
+    {
+        return isset($this->options[$name])? $this->options[$name] : $default;
     }
 
     public function getWidget($default =  null)
