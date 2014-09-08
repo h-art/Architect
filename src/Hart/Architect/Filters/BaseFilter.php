@@ -29,7 +29,7 @@ abstract class BaseFilter
 
     public function like($query,$value='')
     {
-        $query->where($this->column,'LIKE',$value);
+        $query->where($this->column,'LIKE','%'.$value.'%');
     }
 
     public function greaterThan($query,$value='')

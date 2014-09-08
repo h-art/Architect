@@ -27,6 +27,7 @@ class FilterCollection implements \IteratorAggregate
 
         foreach($values as $column => $value)
         {
+
             if($this->has($column) && $value)
             {
                 $this->getFilter($column)->like($query,$value);

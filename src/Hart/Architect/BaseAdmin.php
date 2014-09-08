@@ -36,7 +36,6 @@ class BaseAdmin extends Controller
      */
     protected $custom_actions_collection;
 
-
     protected $custom_actions_configuration = array();
 
     protected $filterCollection = null;
@@ -373,8 +372,6 @@ class BaseAdmin extends Controller
 
     public function setupCustomActions()
     {
-     //   $x = new \Illuminate\Routing\ControllerInspector();
-     //   dd($x->getRoutable($this,'pippo'));
         $this->custom_actions_collection = new ArchitectActionCollection($this,$this->custom_actions_configuration);
     }
 
