@@ -13,6 +13,8 @@ use Illuminate\Routing\Controller;
 use Hart\Architect\Configuration\ArchitectAction;
 use Hart\Architect\Configuration\ArchitectActionCollection;
 
+use Hart\Architect\Filters\FilterCollection;
+
 class BaseAdmin extends Controller
 {
     /**
@@ -25,7 +27,7 @@ class BaseAdmin extends Controller
      * the default query to retrieve data sets
      * @var [type]
      */
-    protected $default_query;
+    protected $base_query;
 
 
     /**
@@ -37,13 +39,17 @@ class BaseAdmin extends Controller
 
     protected $custom_actions_configuration = array();
 
+    protected $filterCollection = null;
+
     /**
      * class constructor
      */
     function __construct()
     {
         $this->eloquent_model = $this->getBaseClassName();
+        $this->setupFilters();
         $this->setupCustomActions();
+
     }
 
     /**
@@ -52,16 +58,37 @@ class BaseAdmin extends Controller
      */
     public function index()
     {
-
-        $rows = $this->getDefaultQuery()->get();
+        $rows = $this->getBaseQuery()->get();
 
         return View::make('architect::index', [
             'controller' => $this,
             'eloquent_model' => $this->eloquent_model,
             'fields' => $this->getFields(),
+            'filters' => $this->filterCollection->getForm(),
             'rows' => $rows
         ]);
     }
+
+    /**
+     * render the list of resources
+     * @return Response
+     */
+    public function filter()
+    {
+
+        $filter_values = Input::except(['_token', '_method']);
+
+        $rows = $this->applyFilters($filter_values)->get();
+
+        return View::make('architect::index', [
+            'controller' => $this,
+            'eloquent_model' => $this->eloquent_model,
+            'fields' => $this->getFields(),
+            'filters' => $this->filterCollection->getForm($filter_values),
+            'rows' => $rows
+        ]);
+    }
+
 
     /**
      * displays a single resource
@@ -69,7 +96,7 @@ class BaseAdmin extends Controller
      */
     public function show($id)
     {
-        $row = $this->getDefaultQuery()->findOrFail($id);
+        $row = $this->getBaseQuery()->findOrFail($id);
 
         return View::make('architect::show', [
             'controller' => $this,
@@ -111,7 +138,7 @@ class BaseAdmin extends Controller
      */
     public function edit($id)
     {
-        $row = $this->getDefaultQuery()->findOrFail($id);
+        $row = $this->getBaseQuery()->findOrFail($id);
 
         return View::make('architect::edit', [
             'controller' => $this,
@@ -280,8 +307,11 @@ class BaseAdmin extends Controller
      */
     public function registerRoutes()
     {
-        Route::resource($this->getRouteNamePrefix(), get_class($this));
         $this->custom_actions_collection->registerRoutes();
+        Route::match(array('get','post'),$this->getRouteNamePrefix().'/filter', array('as' => $this->getRouteNamePrefix().'.filter', 'uses' =>  get_class($this).'@filter'));
+
+        Route::resource($this->getRouteNamePrefix(), get_class($this));
+
 
     }
 
@@ -294,20 +324,37 @@ class BaseAdmin extends Controller
 //FILTERS: must refactor comments
 //===
 
-    public function getDefaultQuery()
+    public function getBaseQuery()
     {
-        if(!$this->default_query)
+        if(!$this->base_query)
         {
             $eloquent_model = $this->eloquent_model;
 
-            $this->default_query = $eloquent_model::on();
+            $this->base_query = $eloquent_model::on();
         }
-        return $this->default_query;
+
+        return $this->base_query;
     }
 
     protected function getFilters()
     {
         return array();
+    }
+
+    protected function setupFilters()
+    {
+        $this->filterCollection = new FilterCollection($this->getFilters());
+
+    }
+
+    protected function getFiltersForm()
+    {
+        return $this->filterCollection->getForm();
+    }
+
+    protected function applyFilters($values)
+    {
+        return $this->filterCollection->apply($values,$this->getBaseQuery());
     }
 
 //===
@@ -320,11 +367,14 @@ class BaseAdmin extends Controller
      */
     public function getCustomActionsPathPrefix()
     {
-        return '/custom';
+        //return '/custom';
+        return '';
     }
 
     public function setupCustomActions()
     {
+     //   $x = new \Illuminate\Routing\ControllerInspector();
+     //   dd($x->getRoutable($this,'pippo'));
         $this->custom_actions_collection = new ArchitectActionCollection($this,$this->custom_actions_configuration);
     }
 

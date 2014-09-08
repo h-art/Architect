@@ -18,7 +18,6 @@ class ArchitectAction
         $this->action_name = $action_name;
         $this->options = $options;
         $this->setup();
-        $this->registerRoute();
     }
 
 
