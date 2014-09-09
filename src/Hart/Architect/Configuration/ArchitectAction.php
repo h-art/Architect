@@ -12,7 +12,6 @@ class ArchitectAction
                 $method,
                 $options;
 
-
     public function __construct($action_name,$options)
     {
         $this->action_name = $action_name;
@@ -20,16 +19,13 @@ class ArchitectAction
         $this->setup();
     }
 
-
-
     protected function setup()
     {
         $this->route_name_prefix = $this->getOption('route_name_prefix');
         $this->callable = $this->getOption('callable',false);
         $this->method = $this->getOption('method','GET');
 
-        if(!$this->route_name_prefix)
-        {
+        if (!$this->route_name_prefix) {
             throw new \Exception("Missing route_name_prefix parameter", 1);
         }
     }
@@ -45,7 +41,7 @@ class ArchitectAction
 
     protected function getOption($name,$default = false)
     {
-        return isset($this->options[$name])? $this->options[$name] : $default;
+        return isset($this->options[$name]) ? $this->options[$name] : $default;
     }
 
 }

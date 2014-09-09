@@ -6,18 +6,13 @@ class FilterCollection implements \IteratorAggregate
 {
     protected $collection = array();
 
-
     public function __construct($filters)
     {
 
-        foreach ($filters as $column => $filterType)
-        {
-            if ( $filterType instanceof BaseFilter )
-            {
+        foreach ($filters as $column => $filterType) {
+            if ($filterType instanceof BaseFilter) {
                 $this->collection[$column] = $filterType;
-            }
-            else
-            {
+            } else {
 
                 $this->collection[$column] = $this->setupFilterType($column,$filterType);
             }
@@ -27,9 +22,9 @@ class FilterCollection implements \IteratorAggregate
 
     protected function setupFilterType($column,$filterType)
     {
-        if(!is_array($filterType))
-        {
+        if (!is_array($filterType)) {
             $class = "Hart\Architect\Filters\\".$filterType."Filter";
+
             return new $class($column);
         }
 
@@ -46,11 +41,9 @@ class FilterCollection implements \IteratorAggregate
 
     public function apply($values,$query)
     {
-        foreach($values as $column => $value)
-        {
+        foreach ($values as $column => $value) {
 
-            if($this->has($column) && ($value !== '') )
-            {
+            if ($this->has($column) && ($value !== '') ) {
                 $this->getFilter($column)->apply($query,$value);
             }
         }
@@ -70,16 +63,15 @@ class FilterCollection implements \IteratorAggregate
 
     public function getFilter($column)
     {
-        return ($this->has($column))? $this->collection[$column] : null;
+        return ($this->has($column)) ? $this->collection[$column] : null;
     }
 
     public function getForm($defaults = array(),$widget_attributes = array())
     {
         $form = array();
-        foreach($this->collection as $column => $filter)
-        {
-            $default_value = isset($defaults[$column])? $defaults[$column] : null;
-            $current_widget_attributes = isset($widget_attributes[$column])?  $widget_attributes[$column] : array();
+        foreach ($this->collection as $column => $filter) {
+            $default_value = isset($defaults[$column]) ? $defaults[$column] : null;
+            $current_widget_attributes = isset($widget_attributes[$column]) ?  $widget_attributes[$column] : array();
 
             $form[$column] = $filter->getWidget($default_value,$current_widget_attributes);
         }

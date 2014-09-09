@@ -2,7 +2,6 @@
 
 namespace Hart\Architect\Filters;
 
-
 class BooleanFilter extends ChoiceFilter
 {
     public function __construct($column,$options = array())
@@ -18,6 +17,5 @@ class BooleanFilter extends ChoiceFilter
         $this->setupChoices();
 
     }
-
 
 }

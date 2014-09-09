@@ -3,10 +3,9 @@
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\App;
-use Illuminate\FileSystem\FileSystem;
 
-class ArchitectServiceProvider extends ServiceProvider {
-
+class ArchitectServiceProvider extends ServiceProvider
+{
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -28,8 +27,7 @@ class ArchitectServiceProvider extends ServiceProvider {
         $admin_classes_namespace = Config::get('architect::admin_classes_namespace');
         $admin_classes = Config::get('architect::admin_classes');
 
-        foreach ( $admin_classes as $admin_class )
-        {
+        foreach ($admin_classes as $admin_class) {
             $class = $admin_classes_namespace . $admin_class;
             App::bind($admin_class, $class); // register class in IoC container
 

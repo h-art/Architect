@@ -2,7 +2,6 @@
 
 namespace Hart\Architect\Filters;
 
-
 use Illuminate\Support\Facades\Form;
 
 use Hart\Architect\Filters\Exceptions\FilterMethodNotCallableException;
@@ -10,11 +9,9 @@ use Hart\Architect\Filters\Exceptions\FilterMethodNotCallableException;
 abstract class BaseFilter
 {
 
-
     protected   $baseQuery = null,
                 $column = null,
                 $options = array();
-
 
     public function __construct($column,$options = array())
     {
@@ -29,7 +26,7 @@ abstract class BaseFilter
 
     public function getOption($name,$default = null)
     {
-        return isset($this->options[$name])? $this->options[$name] : $default;
+        return isset($this->options[$name]) ? $this->options[$name] : $default;
     }
 
     public function getWidget($default = null ,$attributes = array())
@@ -41,12 +38,9 @@ abstract class BaseFilter
     {
         $filterMethod = $this->getOption('filterMethod','like');
 
-        if(is_callable(array($this,$filterMethod)))
-        {
+        if (is_callable(array($this,$filterMethod))) {
             $this->{$filterMethod}($query,$value);
-        }
-        else
-        {
+        } else {
             throw new FilterMethodNotCallableException("Method {$this->filterMethod} is not callable", 1);
         }
     }

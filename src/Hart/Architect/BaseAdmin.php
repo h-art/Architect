@@ -49,7 +49,6 @@ class BaseAdmin extends ArchitectController
         ]);
     }
 
-
     /**
      * displays a single resource
      * @return Response
@@ -118,27 +117,21 @@ class BaseAdmin extends ArchitectController
         $eloquent_model = $this->eloquent_model;
         $row = $eloquent_model::findOrFail($id);
 
-        foreach ( $input as $key => $value )
-        {
+        foreach ($input as $key => $value) {
             // guess the relationship type
-            if ( is_array($value) )
-            {
-                if ( preg_match('/HasMany/', get_class($row->$key())) )
-                {
+            if ( is_array($value) ) {
+                if ( preg_match('/HasMany/', get_class($row->$key())) ) {
                     $related = array();
                     $related_model = get_class($row->$key()->getRelated());
                     $relation_results = $row->$key()->get();
 
                     // find the related models to associate
-                    for ( $i = 0; $i < count($value); $i++ )
-                    {
+                    for ( $i = 0; $i < count($value); $i++ ) {
                         array_push($related, $related_model::find($value[$i]));
                     }
 
-                    foreach ( $relation_results as $relation_result )
-                    {
-                        if ( ! in_array($relation_result, $related) )
-                        {
+                    foreach ($relation_results as $relation_result) {
+                        if ( ! in_array($relation_result, $related) ) {
                             echo $relation_result->id . ' ';
                         }
                     }
@@ -147,20 +140,17 @@ class BaseAdmin extends ArchitectController
                     $row->$key()->saveMany($related);
                 }
 
-                if ( preg_match('/BelongsToMany/', get_class($row->$key())) )
-                {
+                if ( preg_match('/BelongsToMany/', get_class($row->$key())) ) {
                     $row->$key()->sync($value);
                 }
             }
             // assign non-relation value
-            else
-            {
+            else {
                 $row->$key = $value;
             }
         }
 
-        if ( $row->save() )
-        {
+        if ( $row->save() ) {
             return Redirect::route(strtolower($eloquent_model) . '.index');
         }
     }
@@ -173,8 +163,7 @@ class BaseAdmin extends ArchitectController
     {
         $eloquent_model = $this->eloquent_model;
 
-        if ( $eloquent_model::destroy($id) )
-        {
+        if ( $eloquent_model::destroy($id) ) {
             return Redirect::route(strtolower($eloquent_model) . '.index');
         }
     }
@@ -194,8 +183,7 @@ class BaseAdmin extends ArchitectController
      */
     public function getBaseQuery()
     {
-        if(!$this->base_query)
-        {
+        if (!$this->base_query) {
             $eloquent_model = $this->eloquent_model;
             $this->base_query = $eloquent_model::on();
         }
@@ -212,8 +200,6 @@ class BaseAdmin extends ArchitectController
         return array();
     }
 
-
-
     /**
      * Returns the prefix of the url used for custom actions
      * @return [type] [description]
@@ -223,8 +209,5 @@ class BaseAdmin extends ArchitectController
         //return '/custom';
         return '';
     }
-
-
-
 
 }

@@ -22,7 +22,6 @@ abstract class ArchitectController extends Controller
      */
     protected $base_query;
 
-
     /**
      * collection of custom actions
      * @var array
@@ -33,11 +32,10 @@ abstract class ArchitectController extends Controller
 
     protected $filterCollection = null;
 
-
     /**
      * class constructor
      */
-    function __construct()
+    public function __construct()
     {
         $this->eloquent_model = $this->getBaseClassName();
         $this->setupFilters();
@@ -52,8 +50,7 @@ abstract class ArchitectController extends Controller
      */
     public function renderLabel($field_name)
     {
-        if ( isset($this->labels[$field_name]) )
-        {
+        if ( isset($this->labels[$field_name]) ) {
             // return the label specified by the user
             return $this->labels[$field_name];
         }
@@ -67,22 +64,21 @@ abstract class ArchitectController extends Controller
      * Rendering depends on the action method. If a valid method is found
      * in user generated admin class, then that method is called.
      * @param  string $action_name the action name 'index', 'show', 'edit', etc.
-     * @param  Object $row the whole Eloquent row as comes from the database
-     * @param  string $field_name the name of the field or column
-     * @param  mixed $field the value of the field or column
+     * @param  Object $row         the whole Eloquent row as comes from the database
+     * @param  string $field_name  the name of the field or column
+     * @param  mixed  $field       the value of the field or column
      * @return mixed
      */
     public function renderField($action_name, $row, $field_name, $field)
     {
         // check if <action><Fieldname>() method exsists, and if so, call it
-        if ( method_exists($this, $action_name . ucfirst($field_name)) )
-        {
+        if ( method_exists($this, $action_name . ucfirst($field_name)) ) {
             $method_name = $action_name . ucfirst($field_name);
+
             return $this->$method_name($row, $field_name, $field);
         }
 
-        switch ( $action_name )
-        {
+        switch ($action_name) {
             case 'create':
             return View::make('architect::inputs/field_create', ['field_name' => $field_name]);
 
@@ -127,14 +123,11 @@ abstract class ArchitectController extends Controller
         $this->custom_actions_collection->registerRoutes();
 
         // only setup routing for filters if the admin has some filter
-        if(count($this->getFilters()))
-        {
+        if (count($this->getFilters())) {
             Route::match(array('get','post'),$this->getRouteNamePrefix().'/filter', array('as' => $this->getRouteNamePrefix().'.filter', 'uses' =>  get_class($this).'@filter'));
         }
 
-
         Route::resource($this->getRouteNamePrefix(), get_class($this));
-
 
     }
 
