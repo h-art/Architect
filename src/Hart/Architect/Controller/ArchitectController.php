@@ -124,11 +124,10 @@ abstract class ArchitectController extends Controller
 
         // only setup routing for filters if the admin has some filter
         if (count($this->getFilters())) {
-            Route::match(array('get','post'), $this->getRouteNamePrefix() . '/filter', array('as' => $this->getRouteNamePrefix() . '.filter', 'uses' =>  get_class($this).'@filter'));
+            Route::match(array('get', 'post'), $this->getRouteNamePrefix() . '/filter', array('as' => $this->getRouteNamePrefix() . '.filter', 'uses' =>  get_class($this) . '@filter'));
         }
 
         Route::resource($this->getRouteNamePrefix(), get_class($this));
-
     }
 
     public function getRouteNamePrefix()
