@@ -27,7 +27,6 @@ class FilterCollection implements \IteratorAggregate
 
     protected function setupFilterType($column,$filterType)
     {
-
         if(!is_array($filterType))
         {
             $class = "Hart\Architect\Filters\\".$filterType."Filter";
@@ -35,16 +34,11 @@ class FilterCollection implements \IteratorAggregate
         }
 
         $type = $filterType['type'];
-        $model = $filterType['model'];
-        $query = $filterType['query'];
-
         $class = "Hart\Architect\Filters\\".$type."Filter";
 
         return new $class($column,$filterType);
-
-
-
     }
+
     public function getIterator()
     {
         return new ArrayIterator($this->collection);
@@ -52,13 +46,12 @@ class FilterCollection implements \IteratorAggregate
 
     public function apply($values,$query)
     {
-
         foreach($values as $column => $value)
         {
 
-            if($this->has($column) && $value)
+            if($this->has($column) && ($value !== '') )
             {
-                $this->getFilter($column)->like($query,$value);
+                $this->getFilter($column)->apply($query,$value);
             }
         }
 
@@ -80,20 +73,15 @@ class FilterCollection implements \IteratorAggregate
         return ($this->has($column))? $this->collection[$column] : null;
     }
 
-    public function getForm($defaults = array())
+    public function getForm($defaults = array(),$widget_attributes = array())
     {
         $form = array();
         foreach($this->collection as $column => $filter)
         {
-            if(isset($defaults[$column]))
-            {
-                $form[$column] = $filter->getWidget($defaults[$column]);
-            }
-            else
-            {
-                $form[$column] = $filter->getWidget();
-            }
+            $default_value = isset($defaults[$column])? $defaults[$column] : null;
+            $current_widget_attributes = isset($widget_attributes[$column])?  $widget_attributes[$column] : array();
 
+            $form[$column] = $filter->getWidget($default_value,$current_widget_attributes);
         }
 
         return $form;

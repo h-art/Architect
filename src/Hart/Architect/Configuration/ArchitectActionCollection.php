@@ -33,7 +33,7 @@ class ArchitectActionCollection
 
             if(!isset($params['callable']))
             {
-                $params['callable'] =  get_class($this->admin)."@".$name;//array($this,$name);
+                $params['callable'] =  get_class($this->admin)."@".$name;
             }
 
             $this->routes[$name] = new ArchitectAction($name,$params);
