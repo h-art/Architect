@@ -29,7 +29,7 @@ class ArchitectServiceProvider extends ServiceProvider
 
         foreach ($admin_classes as $admin_class) {
             $class = $admin_classes_namespace . $admin_class;
-            App::bind($admin_class, $class); // register class in IoC container
+            App::singleton($admin_class, $class); // register class in IoC container
 
             // register routes
             App::make($admin_class)->registerRoutes();
@@ -55,5 +55,4 @@ class ArchitectServiceProvider extends ServiceProvider
     {
         return array();
     }
-
 }
