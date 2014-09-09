@@ -2,13 +2,14 @@
 namespace Hart\Architect\Configuration;
 
 use Hart\Architect\BaseAdmin;
+use Illuminate\Support\Facades\Route;
 
 class ArchitectActionCollection
 {
-    protected   $routes = array(),
-                $admin;
+    protected $routes = array();
+    protected $admin;
 
-    public function __construct(BaseAdmin $admin,$actions_configuration)
+    public function __construct(BaseAdmin $admin, $actions_configuration)
     {
         $this->admin = $admin;
         $this->setupCustomActions($actions_configuration);
@@ -33,7 +34,7 @@ class ArchitectActionCollection
                 $params['callable'] =  get_class($this->admin)."@".$name;
             }
 
-            $this->routes[$name] = new ArchitectAction($name,$params);
+            $this->routes[$name] = new ArchitectAction($name, $params);
         }
     }
 
@@ -41,12 +42,11 @@ class ArchitectActionCollection
     {
         if (count($this->routes)) {
             $routes = $this->routes;
-            \Route::group(array('prefix' => $this->admin->getRouteNamePrefix().$this->admin->getCustomActionsPathPrefix() ), function () use ($routes) {
+            Route::group(array('prefix' => $this->admin->getRouteNamePrefix() . $this->admin->getCustomActionsPathPrefix()), function () use ($routes) {
                 foreach ($routes as $name => $action) {
                     $action->registerRoute();
                 }
             });
         }
     }
-
 }
