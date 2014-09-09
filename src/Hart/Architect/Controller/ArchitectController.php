@@ -50,7 +50,7 @@ abstract class ArchitectController extends Controller
      */
     public function renderLabel($field_name)
     {
-        if ( isset($this->labels[$field_name]) ) {
+        if (isset($this->labels[$field_name])) {
             // return the label specified by the user
             return $this->labels[$field_name];
         }
@@ -72,7 +72,7 @@ abstract class ArchitectController extends Controller
     public function renderField($action_name, $row, $field_name, $field)
     {
         // check if <action><Fieldname>() method exsists, and if so, call it
-        if ( method_exists($this, $action_name . ucfirst($field_name)) ) {
+        if (method_exists($this, $action_name . ucfirst($field_name))) {
             $method_name = $action_name . ucfirst($field_name);
 
             return $this->$method_name($row, $field_name, $field);
@@ -80,16 +80,16 @@ abstract class ArchitectController extends Controller
 
         switch ($action_name) {
             case 'create':
-            return View::make('architect::inputs/field_create', ['field_name' => $field_name]);
+                return View::make('architect::inputs/field_create', ['field_name' => $field_name]);
 
             case 'edit':
-            return View::make('architect::inputs/field_edit', [
+                return View::make('architect::inputs/field_edit', [
                 'field_name' => $field_name,
                 'field' => $field,
             ]);
 
             default:
-            return $field;
+                return $field;
         }
     }
 
@@ -124,7 +124,7 @@ abstract class ArchitectController extends Controller
 
         // only setup routing for filters if the admin has some filter
         if (count($this->getFilters())) {
-            Route::match(array('get','post'),$this->getRouteNamePrefix().'/filter', array('as' => $this->getRouteNamePrefix().'.filter', 'uses' =>  get_class($this).'@filter'));
+            Route::match(array('get','post'), $this->getRouteNamePrefix().'/filter', array('as' => $this->getRouteNamePrefix().'.filter', 'uses' =>  get_class($this).'@filter'));
         }
 
         Route::resource($this->getRouteNamePrefix(), get_class($this));
@@ -148,12 +148,11 @@ abstract class ArchitectController extends Controller
 
     protected function applyFilters($values)
     {
-        return $this->filterCollection->apply($values,$this->getBaseQuery());
+        return $this->filterCollection->apply($values, $this->getBaseQuery());
     }
 
     public function setupCustomActions()
     {
-        $this->custom_actions_collection = new ArchitectActionCollection($this,$this->custom_actions_configuration);
+        $this->custom_actions_collection = new ArchitectActionCollection($this, $this->custom_actions_configuration);
     }
-
 }
