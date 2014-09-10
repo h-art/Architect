@@ -3,11 +3,12 @@
 namespace Hart\Architect\Controller;
 
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Config;
 
 use Hart\Architect\Configuration\ArchitectActionCollection;
+use Hart\Architect\Configuration\ArchitectConfiguration;
 use Hart\Architect\Filters\FilterCollection;
 
 abstract class ArchitectController extends Controller
@@ -121,14 +122,22 @@ abstract class ArchitectController extends Controller
      */
     public function registerRoutes()
     {
-        $this->custom_actions_collection->registerRoutes();
 
-        // only setup routing for filters if the admin has some filter
-        if (count($this->getFilters())) {
-            Route::match(array('get', 'post'), $this->getRouteNamePrefix() . '/filter', array('as' => $this->getRouteNamePrefix() . '.filter', 'uses' =>  get_class($this) . '@filter'));
-        }
 
-        Route::resource($this->getRouteNamePrefix(), get_class($this));
+        $routes_domain = Config::get('architect::routing.domain', false);
+        $routes_url_prefix = Config::get('architect::routing.url_prefix', false);
+
+        Route::group(array('domain' => $routes_domain,'prefix' => $routes_url_prefix), function () {
+            $this->custom_actions_collection->registerRoutes();
+
+            // only setup routing for filters if the admin has some filter
+            if (count($this->getFilters())) {
+                Route::match(array('get', 'post'), $this->getRouteNamePrefix() . '/filter', array('as' => $this->getRouteNamePrefix() . '.filter', 'uses' =>  get_class($this) . '@filter'));
+            }
+
+            Route::resource($this->getRouteNamePrefix(), get_class($this));
+        });
+
     }
 
     public function getRouteNamePrefix()

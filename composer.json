@@ -16,8 +16,8 @@
         "illuminate/support": "4.2.*"
     },
     "autoload": {
-        "psr-0": {
-            "Hart\\Architect\\": "src/"
+        "psr-4": {
+            "Hart\\Architect\\": "src/Hart/Architect/"
         }
     },
     "minimum-stability": "stable"
