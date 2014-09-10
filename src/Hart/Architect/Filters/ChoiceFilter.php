@@ -6,7 +6,6 @@ use  Hart\Architect\Filters\Exceptions\NoChoicesException;
 
 class ChoiceFilter extends BaseFilter
 {
-
     protected $choices = array();
 
     /**
@@ -20,22 +19,21 @@ class ChoiceFilter extends BaseFilter
      * @param string $column  column for the filter
      * @param array  $options [description]
      */
-    public function __construct($column,$options = array())
+    public function __construct($column, $options = array())
     {
-        parent::__construct($column,$options);
+        parent::__construct($column, $options);
         $this->options = $options;
         $this->setupChoices();
-
     }
 
     public function setupChoices()
     {
-        if ($this->getOption('choices',false)) {
+        if ($this->getOption('choices', false)) {
             $empty_entry = array();
             if ($this->getOption('with_empty')) {
-                $empty_entry[''] = $this->getOption('with_empty',' ');
+                $empty_entry[''] = $this->getOption('with_empty', ' ');
             }
-            $this->choices = array_merge($empty_entry,$this->getOption('choices'));
+            $this->choices = array_merge($empty_entry, $this->getOption('choices'));
         } else {
             if ($query = $this->getOption('query')) {
                 $objects = $query->get();
@@ -53,27 +51,25 @@ class ChoiceFilter extends BaseFilter
 
     protected function createChoices($objects)
     {
-
         if ($this->getOption('with_empty')) {
-            $this->choices[''] = $this->getOption('with_empty',' ');
+            $this->choices[''] = $this->getOption('with_empty', ' ');
         }
 
-        $keyMethod = $this->getOption('keyMethod','getKeyName');
-        $valueMethod = $this->getOption('valueMethod','__toString');
+        $keyMethod = $this->getOption('keyMethod', 'getKeyName');
+        $valueMethod = $this->getOption('valueMethod', '__toString');
         foreach ($objects as $o) {
             $key = $o->$keyMethod();
             $this->choices[$o->$key] = $o->$valueMethod();
         }
     }
 
-    public function getWidget($default = null ,$attributes = array())
+    public function getWidget($default = null, $attributes = array())
     {
-        return \Form::Select($this->column,$this->getChoices(),$default,$attributes);
+        return \Form::Select($this->column, $this->getChoices(), $default, $attributes);
     }
 
     public function getChoices()
     {
         return $this->choices;
     }
-
 }

@@ -31,7 +31,7 @@ class ArchitectActionCollection
             $params['route_name_prefix'] = $this->admin->getRouteNamePrefix();
 
             if (!isset($params['callable'])) {
-                $params['callable'] =  get_class($this->admin)."@".$name;
+                $params['callable'] = get_class($this->admin) . "@" . $name;
             }
 
             $this->routes[$name] = new ArchitectAction($name, $params);

@@ -1,4 +1,5 @@
 <?php
+
 namespace Hart\Architect\Filters\Exceptions;
 
 class NoChoicesException extends \Exception
@@ -7,7 +8,5 @@ class NoChoicesException extends \Exception
     {
         $message .= " You must pass an option among choices,query,model";
         parent::__construct($message, $code, $previous);
-
     }
-
 }

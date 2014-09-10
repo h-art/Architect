@@ -3,7 +3,9 @@
 namespace Hart\Architect\Controller;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 
 use Hart\Architect\Configuration\ArchitectActionCollection;
 use Hart\Architect\Filters\FilterCollection;
@@ -40,7 +42,6 @@ abstract class ArchitectController extends Controller
         $this->eloquent_model = $this->getBaseClassName();
         $this->setupFilters();
         $this->setupCustomActions();
-
     }
 
     /**
