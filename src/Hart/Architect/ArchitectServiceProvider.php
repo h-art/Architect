@@ -1,4 +1,6 @@
-<?php namespace Hart\Architect;
+<?php
+
+namespace Hart\Architect;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;

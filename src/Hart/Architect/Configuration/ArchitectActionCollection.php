@@ -1,4 +1,5 @@
 <?php
+
 namespace Hart\Architect\Configuration;
 
 use Hart\Architect\BaseAdmin;

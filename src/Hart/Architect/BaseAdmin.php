@@ -12,7 +12,6 @@ use Hart\Architect\Controller\ArchitectController;
 
 class BaseAdmin extends ArchitectController
 {
-
     /**
      * render the list of resources
      * @return Response

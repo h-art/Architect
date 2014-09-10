@@ -1,4 +1,5 @@
 <?php
+
 namespace Hart\Architect\Configuration;
 
 use Illuminate\Support\Facades\Route;
