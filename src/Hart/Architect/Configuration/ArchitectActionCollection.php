@@ -23,7 +23,9 @@ class ArchitectActionCollection
 
     protected function setupCustomActions($actions_configuration)
     {
-        foreach ($actions_configuration as $name => $params) {
+        $list_actions = $actions_configuration['list_actions'];
+
+        foreach ($list_actions as $name => $params) {
             if (!is_array($params)) {
                 $name = $params;
                 $params = array();

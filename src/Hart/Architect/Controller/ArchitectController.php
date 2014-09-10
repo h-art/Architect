@@ -31,7 +31,10 @@ abstract class ArchitectController extends Controller
      */
     protected $custom_actions_collection;
 
-    protected $custom_actions_configuration = array();
+    protected $custom_actions_configuration = array(
+        'list_actions'=> array(),
+        'object_actions'=> array(),
+    );
 
     protected $filterCollection = null;
 
