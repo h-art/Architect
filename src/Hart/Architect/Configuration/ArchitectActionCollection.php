@@ -5,6 +5,9 @@ namespace Hart\Architect\Configuration;
 use Hart\Architect\BaseAdmin;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * [OBSOLETE?]
+ */
 class ArchitectActionCollection
 {
     protected $routes = array();
@@ -23,13 +26,19 @@ class ArchitectActionCollection
 
     protected function setupCustomActions($actions_configuration)
     {
-        $list_actions = $actions_configuration['list_actions'];
+        //$this->createActionsFromArray($actions_configuration['list_actions']);
+        $this->createActionsFromArray($actions_configuration['object_actions']);
+    }
 
-        foreach ($list_actions as $name => $params) {
+    protected function createActionsFromArray($actions)
+    {
+        foreach ($actions as $name => $params) {
             if (!is_array($params)) {
                 $name = $params;
                 $params = array();
             }
+
+            $url = isset($params['url'])? $params['url'] : $name;
 
             $params['route_name_prefix'] = $this->admin->getRouteNamePrefix();
 
@@ -37,7 +46,7 @@ class ArchitectActionCollection
                 $params['callable'] = get_class($this->admin) . "@" . $name;
             }
 
-            $this->routes[$name] = new ArchitectAction($name, $params);
+            $this->routes[$name] = new ArchitectAction($url, $name, $params);
         }
     }
 

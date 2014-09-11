@@ -22,7 +22,7 @@ class BaseAdmin extends ArchitectController
 
         return View::make('architect::index', [
             'controller' => $this,
-            'eloquent_model' => $this->eloquent_model,
+            'eloquent_model' => $this->eloquentModel,
             'fields' => $this->getFields(),
             'filters' => $this->filterCollection->getForm(),
             'rows' => $rows
@@ -42,7 +42,7 @@ class BaseAdmin extends ArchitectController
 
         return View::make('architect::index', [
             'controller' => $this,
-            'eloquent_model' => $this->eloquent_model,
+            'eloquent_model' => $this->eloquentModel,
             'fields' => $this->getFields(),
             'filters' => $this->filterCollection->getForm($filter_values),
             'rows' => $rows
@@ -59,7 +59,7 @@ class BaseAdmin extends ArchitectController
 
         return View::make('architect::show', [
             'controller' => $this,
-            'eloquent_model' => $this->eloquent_model,
+            'eloquent_model' => $this->eloquentModel,
             'fields' => $this->getFields(),
             'row' => $row
         ]);
@@ -73,7 +73,7 @@ class BaseAdmin extends ArchitectController
     {
         return View::make('architect::create', [
             'controller' => $this,
-            'eloquent_model' => $this->eloquent_model,
+            'eloquent_model' => $this->eloquentModel,
             'fields' => $this->getFields()
         ]);
     }
@@ -84,7 +84,7 @@ class BaseAdmin extends ArchitectController
      */
     public function store()
     {
-        $eloquent_model = $this->eloquent_model;
+        $eloquent_model = $this->eloquentModel;
         $instance = App::make($eloquent_model);
         $instance->save();
 
@@ -101,7 +101,7 @@ class BaseAdmin extends ArchitectController
 
         return View::make('architect::edit', [
             'controller' => $this,
-            'eloquent_model' => $this->eloquent_model,
+            'eloquent_model' => $this->eloquentModel,
             'fields' => $this->getFields(),
             'row' => $row
         ]);
@@ -114,7 +114,7 @@ class BaseAdmin extends ArchitectController
     public function update($id)
     {
         $input = Input::except(['_token', '_method']);
-        $eloquent_model = $this->eloquent_model;
+        $eloquent_model = $this->eloquentModel;
         $row = $eloquent_model::findOrFail($id);
 
         foreach ($input as $key => $value) {
@@ -160,7 +160,7 @@ class BaseAdmin extends ArchitectController
      */
     public function destroy($id)
     {
-        $eloquent_model = $this->eloquent_model;
+        $eloquent_model = $this->eloquentModel;
 
         if ($eloquent_model::destroy($id)) {
             return Redirect::route(strtolower($eloquent_model) . '.index');
@@ -182,12 +182,12 @@ class BaseAdmin extends ArchitectController
      */
     public function getBaseQuery()
     {
-        if (!$this->base_query) {
-            $eloquent_model = $this->eloquent_model;
-            $this->base_query = $eloquent_model::on();
+        if (!$this->baseQuery) {
+            $eloquent_model = $this->eloquentModel;
+            $this->baseQuery = $eloquent_model::on();
         }
 
-        return $this->base_query;
+        return $this->baseQuery;
     }
 
     /**
