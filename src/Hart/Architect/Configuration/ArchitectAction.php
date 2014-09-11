@@ -4,16 +4,21 @@ namespace Hart\Architect\Configuration;
 
 use Illuminate\Support\Facades\Route;
 
+/**
+ * [OBSOLETE?]
+ */
 class ArchitectAction
 {
     protected $action_name;
+    protected $url;
     protected $route_name_prefix;
     protected $callable;
     protected $method;
     protected $options;
 
-    public function __construct($action_name, $options)
+    public function __construct($url, $action_name = null, $options = array())
     {
+        $this->url = $url;
         $this->action_name = $action_name;
         $this->options = $options;
         $this->setup();
@@ -32,7 +37,7 @@ class ArchitectAction
 
     public function registerRoute()
     {
-        Route::{$this->method}('/'.$this->action_name, array(
+        Route::{$this->method}('/'.$this->url, array(
             'as'     => $this->route_name_prefix.".".$this->action_name,
             'uses'    => $this->callable
         ));
