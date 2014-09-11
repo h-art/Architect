@@ -194,7 +194,7 @@ class BaseAdmin extends ArchitectController
      * Overwrite to customize filters
      * @return array of filters
      */
-    protected function getFilters()
+    public function getFilters()
     {
         return array();
     }
