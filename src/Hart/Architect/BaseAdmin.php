@@ -20,6 +20,9 @@ class BaseAdmin extends ArchitectController
     {
         $rows = $this->getBaseQuery()->get();
 
+        //die('due');
+        die(var_dump($this->getCustomListActions(), $this->getCustomObjectActions()));
+
         return View::make('architect::index', [
             'controller' => $this,
             'eloquent_model' => $this->eloquentModel,

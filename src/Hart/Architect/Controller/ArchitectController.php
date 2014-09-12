@@ -20,7 +20,11 @@ abstract class ArchitectController extends Controller
      */
     protected $baseQuery;
 
+
     protected $controllerRouter;
+
+    protected $listActions = array();
+    protected $objectActions = array();
 
     /**
      * the eloquent model name
@@ -28,17 +32,14 @@ abstract class ArchitectController extends Controller
      */
     protected $eloquentModel;
     protected $filterCollection = null;
-
-    protected $listActions = array();
-
     /**
      * class constructor
      */
     public function __construct()
     {
         $this->eloquentModel = $this->getBaseClassName();
-        $this->setupFilters();
         $this->controllerRouter = new ArchitectControllerRouter($this);
+        $this->setupFilters();
     }
 
     /**
@@ -124,7 +125,6 @@ abstract class ArchitectController extends Controller
         $this->controllerRouter->registerRoutes($routes_domain, $routes_url_prefix);
     }
 
-
     public function getRouteNamePrefix()
     {
         return strtolower($this->getBaseClassName());
@@ -145,8 +145,13 @@ abstract class ArchitectController extends Controller
         return $this->filterCollection->apply($values, $this->getBaseQuery());
     }
 
-    protected function getListActions()
+    public function getCustomListActions()
     {
-        return $this->listActions;
+        return $this->controllerRouter->getCustomListActions();
+    }
+
+    public function getCustomObjectActions()
+    {
+        return $this->controllerRouter->getCustomObjectActions();
     }
 }

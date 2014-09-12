@@ -9,6 +9,9 @@ class ArchitectControllerRouter
 {
     protected $controller = null;
     protected $controllerInspector = null;
+    protected $listActions = array();
+    protected $objectActions = array();
+
 
     public function __construct(BaseAdmin $controller)
     {
@@ -29,8 +32,8 @@ class ArchitectControllerRouter
 
             Route::resource($this->controller->getRouteNamePrefix(), get_class($this->controller));
         });
-
-
+        //die('uno');
+        //die(var_dump($this->getCustomListActions(), $this->getCustomObjectActions()));
     }
 
     /**
@@ -46,17 +49,14 @@ class ArchitectControllerRouter
         return $this->controllerInspector;
     }
 
-    protected function registerInspected($route, $controller, $method, &$names)
+    public function getCustomListActions()
     {
-        $action = array('uses' => $controller.'@'.$method);
+        return $this->listActions;
+    }
 
-        // If a given controller method has been named, we will assign the name to the
-        // controller action array, which provides for a short-cut to method naming
-        // so you don't have to define an individual route for these controllers.
-        $action['as'] = array_pull($names, $method);
-
-
-        Route::{$route['verb']}($route['uri'], $action);
+    public function getCustomObjectActions()
+    {
+        return $this->objectActions;
     }
 
     protected function registerCustomListActions()
@@ -83,6 +83,7 @@ class ArchitectControllerRouter
                     'short_name' => $matches[3]
                 );
 
+
                 $route_name = $this->controller->getRouteNamePrefix().'.'.strtolower($route_configuration['full_name']);
 
                 $names[$route_configuration['controller_method']] = $route_name;
@@ -93,7 +94,6 @@ class ArchitectControllerRouter
                 }
             }
         }
-
     }
 
     protected function registerCustomObjectActions()
@@ -113,9 +113,17 @@ class ArchitectControllerRouter
 
             // if is a custom action
             if (isset($matches[0])) {
-                //dd($matches);
-                $route_name = strtolower($matches[2]);
-                $names[$matches[0]] = $this->controller->getRouteNamePrefix().'.'.$route_name;
+                $route_configuration = array(
+                    'controller_method' => $matches[0],
+                    'http_method' => $matches[1],
+                    'full_name' => $matches[2],
+                    'short_name' => $matches[3]
+                );
+
+                $route_name = $this->controller->getRouteNamePrefix().'.'.strtolower($route_configuration['full_name']);
+                $names[$route_configuration['controller_method']] = $route_name;
+
+                $this->objectActions[$route_name] = $route_configuration;
 
                 foreach ($routes as $config) {
                     $edited_configuration = $config;
@@ -124,5 +132,17 @@ class ArchitectControllerRouter
                 }
             }
         }
+    }
+
+    protected function registerInspected($route, $controller, $method, &$names)
+    {
+        $action = array('uses' => $controller.'@'.$method);
+
+        // If a given controller method has been named, we will assign the name to the
+        // controller action array, which provides for a short-cut to method naming
+        // so you don't have to define an individual route for these controllers.
+        $action['as'] = array_pull($names, $method);
+
+        Route::{$route['verb']}($route['uri'], $action);
     }
 }

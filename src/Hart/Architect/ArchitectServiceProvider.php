@@ -25,8 +25,7 @@ class ArchitectServiceProvider extends ServiceProvider
         // register the package
         $this->package('hart/architect');
 
-        App::singleton('inflector', 'Hart\Architect\Utils\Inflector');
-
+        App::singleton('architect.inflector', 'Hart\Architect\Utils\Inflector');
         // get stuff from configuration
         $admin_classes_namespace = Config::get('architect::admin_classes_namespace');
         $admin_classes = Config::get('architect::admin_classes');
@@ -37,6 +36,7 @@ class ArchitectServiceProvider extends ServiceProvider
 
             // register routes
             App::make($admin_class)->registerRoutes();
+
         }
     }
 
